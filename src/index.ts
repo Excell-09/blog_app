@@ -1,9 +1,15 @@
 import express from "express";
 import errorMiddleware from "./middleware/Error";
 import notFound from "./middleware/NotFound";
+import authenticationRouter from "./routes/authenticationRouter";
 
 const app = express();
 const PORT = 3000;
+
+app.use(express.json());
+
+// route
+app.use("/api", authenticationRouter);
 
 app.use(errorMiddleware);
 app.use("*", notFound);
