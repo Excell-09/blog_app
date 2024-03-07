@@ -3,6 +3,7 @@ import errorMiddleware from "./middleware/Error";
 import notFound from "./middleware/NotFound";
 import authenticationRouter from "./routes/authenticationRouter";
 import blogRouter from "./routes/blogRouter";
+import commentRouter from "./routes/commentRouter";
 import path from "path";
 
 const app = express();
@@ -14,6 +15,7 @@ app.use("/static", express.static(path.join(__dirname, "/uploads/banner")));
 // route
 app.use("/auth", authenticationRouter);
 app.use("/api", blogRouter);
+app.use("/api", commentRouter);
 
 app.use(errorMiddleware);
 app.use("*", notFound);

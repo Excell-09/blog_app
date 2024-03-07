@@ -52,7 +52,15 @@ const getBlog: Handler = async (req, res, next) => {
   try {
     const { id } = await blogGetRequestParams.validate(req.params);
 
-    const blogs = await prisma.blog.findUniqueOrThrow({ where: { id } });
+    const blogs = await prisma.blog.findUniqueOrThrow({
+      where: { id },
+      include: {
+        Comment: {
+          include: { author: { select: { id: true, username: true } } },
+        },
+        author: true,
+      },
+    });
 
     return res.status(200).json(
       new ResponseJson(true, "Success", {
