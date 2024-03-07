@@ -3,13 +3,13 @@ import ResponseJson from "../utility/ResponseJson";
 import * as yup from "yup";
 import prisma from "../lib/prisma";
 
-const blogRequestBody = yup.object().shape({
+const blogBody = yup.object().shape({
   title: yup.string().required(),
   article: yup.string().required(),
   banner: yup.string().required(),
 });
 
-const blogGetRequestParams = yup.object().shape({
+const idBlogParams = yup.object().shape({
   id: yup.string().required(),
 });
 
@@ -23,7 +23,7 @@ const uploadBanner: Handler = (req, res) => {
 
 const createBlog: Handler = async (req, res, next) => {
   try {
-    const { article, banner, title } = await blogRequestBody.validate(req.body);
+    const { article, banner, title } = await blogBody.validate(req.body);
 
     await prisma.blog.create({
       data: { article, banner, title, author: { connect: req.user } },
@@ -50,7 +50,7 @@ const getAllBlogs: Handler = async (req, res, next) => {
 };
 const getBlog: Handler = async (req, res, next) => {
   try {
-    const { id } = await blogGetRequestParams.validate(req.params);
+    const { id } = await idBlogParams.validate(req.params);
 
     const blogs = await prisma.blog.findUniqueOrThrow({
       where: { id },
