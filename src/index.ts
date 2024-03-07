@@ -2,6 +2,7 @@ import express from "express";
 import errorMiddleware from "./middleware/Error";
 import notFound from "./middleware/NotFound";
 import authenticationRouter from "./routes/authenticationRouter";
+import { passport } from "./controllers/authenticationControllers";
 
 const app = express();
 const PORT = 3000;
@@ -9,7 +10,11 @@ const PORT = 3000;
 app.use(express.json());
 
 // route
-app.use("/api", authenticationRouter);
+app.use(authenticationRouter);
+
+app.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
+  res.status(200).json("haii");
+});
 
 app.use(errorMiddleware);
 app.use("*", notFound);

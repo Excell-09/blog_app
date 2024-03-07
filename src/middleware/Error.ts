@@ -1,6 +1,7 @@
 import { ErrorRequestHandler } from "express";
 import ErrorResponse from "../utility/ErrorResponse";
 import { ValidationError } from "yup";
+import ResponseJson from "../utility/ResponseJson";
 
 const errorMiddleware: ErrorRequestHandler = (
   err: ErrorResponse,
@@ -8,12 +9,7 @@ const errorMiddleware: ErrorRequestHandler = (
   res,
   next
 ) => {
-  const errorResponse = {
-    error: {
-      message: err.message,
-    },
-  };
-
+  console.log(err)
   if (err instanceof ValidationError) {
     err.status = 400;
   }
@@ -23,7 +19,7 @@ const errorMiddleware: ErrorRequestHandler = (
     err.message = "Internal Server Error";
   }
 
-  return res.status(err.status).json(errorResponse);
+  return res.status(err.status).json(new ResponseJson(false, err.message, {}));
 };
 
 export default errorMiddleware;

@@ -5,9 +5,10 @@ import * as yup from "yup";
 import { Prisma, User } from "@prisma/client";
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
-import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
-import jwt from "jsonwebtoken";
+import { Strategy as LocalStrategy } from "passport-local";
 import ErrorResponse from "../utility/ErrorResponse";
+import { generateAccessToken, generateRefreshToken } from "../utility/token";
+import ResponseJson from "../utility/ResponseJson";
 
 const userRequestBody = yup.object().shape({
   username: yup.string().required(),
@@ -27,19 +28,18 @@ export const register: Handler = async (req, res, next) => {
       },
     });
 
-    return res.status(201).json({ message: "user created" });
+    return res.status(201).json(new ResponseJson(true, "user created", {}));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
-        error.message = "Account already exists";
-        (error as any).status = 409;
+        return next(new ErrorResponse("Account already exists", 409));
       }
     }
     return next(error);
   }
 };
 
-const opts = {
+export const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: "secret",
 };
@@ -54,7 +54,7 @@ passport.use(
       const isPasswordMatch = await bcrypt.compare(password, user.password);
 
       if (!isPasswordMatch) {
-        return done(new Error("No User Found"), false);
+        throw new ErrorResponse("No User Found", 401);
       }
 
       return done(null, user);
@@ -72,7 +72,7 @@ passport.use(
       });
 
       if (!user) {
-        return done(new Error("No User Found"), false);
+        throw new ErrorResponse("No User Found", 401);
       }
 
       return done(null, user);
@@ -82,20 +82,32 @@ passport.use(
   })
 );
 
-export const login: Handler = (req, res, next) => {
-  passport.authenticate(
-    "local",
-    { session: false },
-    (err: Error, user: User) => {
+export const login: Handler = async (req, res, next) => {
+  try {
+    await userRequestBody.validate(req.body);
+
+    passport.authenticate("local", (err: Error, user: User) => {
       if (err) {
         return next(new ErrorResponse(err.message, 401));
       }
-      const token = jwt.sign({ id: user.id }, opts.secretOrKey, {
-        expiresIn: "1d",
-      });
-      return res.status(200).json({ token });
-    }
-  )(req, res, next);
+
+      const accessToken = generateAccessToken(user.id);
+      const refreshToken = generateRefreshToken(user.id);
+
+      return res.status(200).json(
+        new ResponseJson(true, "User logged in successfully", {
+          user: {
+            ...user,
+            password: undefined,
+          },
+          accessToken,
+          refreshToken,
+        })
+      );
+    })(req, res, next);
+  } catch (error) {
+    return next(error);
+  }
 };
 
 export { passport };
