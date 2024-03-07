@@ -2,7 +2,7 @@ import express from "express";
 import errorMiddleware from "./middleware/Error";
 import notFound from "./middleware/NotFound";
 import authenticationRouter from "./routes/authenticationRouter";
-import { passport } from "./controllers/authenticationControllers";
+import blogRouter from "./routes/blogRouter";
 
 const app = express();
 const PORT = 3000;
@@ -11,8 +11,7 @@ app.use(express.json());
 
 // route
 app.use("/auth", authenticationRouter);
-app.use("/", authenticationRouter);
-
+app.use("/api", blogRouter);
 
 app.use(errorMiddleware);
 app.use("*", notFound);
