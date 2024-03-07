@@ -7,10 +7,4 @@ function generateAccessToken(userId: string) {
   });
 }
 
-function generateRefreshToken(userId: string) {
-  return jwt.sign({ id: userId }, opts.secretOrKey, {
-    expiresIn: "2m",
-  });
-}
-
-export { generateAccessToken, generateRefreshToken };
+export { generateAccessToken };

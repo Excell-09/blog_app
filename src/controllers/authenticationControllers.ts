@@ -7,7 +7,7 @@ import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import ErrorResponse from "../utility/ErrorResponse";
-import { generateAccessToken, generateRefreshToken } from "../utility/token";
+import { generateAccessToken } from "../utility/token";
 import ResponseJson from "../utility/ResponseJson";
 import AUTHCONFIG from "../config/auth";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
@@ -121,7 +121,6 @@ export const login: Handler = async (req, res, next) => {
       }
 
       const accessToken = generateAccessToken(user.id);
-      const refreshToken = generateRefreshToken(user.id);
 
       return res.status(200).json(
         new ResponseJson(true, "User logged in successfully", {
@@ -130,7 +129,6 @@ export const login: Handler = async (req, res, next) => {
             password: undefined,
           },
           accessToken,
-          refreshToken,
         })
       );
     })(req, res, next);
@@ -141,7 +139,6 @@ export const login: Handler = async (req, res, next) => {
 
 export const refreshToken: Handler = async (req, res, next) => {
   const accessToken = generateAccessToken(req.user.id);
-  const refreshToken = generateRefreshToken(req.user.id);
 
   return res.status(200).json(
     new ResponseJson(true, "Token Refreshed successfully", {
@@ -150,7 +147,6 @@ export const refreshToken: Handler = async (req, res, next) => {
         password: undefined,
       },
       accessToken,
-      refreshToken,
     })
   );
 };
@@ -170,12 +166,11 @@ export const handleGoogleAuthCallback: Handler = async (req, res, next) => {
     },
     (err: Error, user: User) => {
       const accessToken = generateAccessToken(user.id);
-      const refreshToken = generateRefreshToken(user.id);
+
       res.status(200).json(
         new ResponseJson(true, "sign in with google successfuly", {
           user: { ...user, password: undefined },
           accessToken,
-          refreshToken,
         })
       );
     }
