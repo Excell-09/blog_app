@@ -12,10 +12,6 @@ app.use(express.json());
 // route
 app.use(authenticationRouter);
 
-app.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
-  res.status(200).json("haii");
-});
-
 app.use(errorMiddleware);
 app.use("*", notFound);
 

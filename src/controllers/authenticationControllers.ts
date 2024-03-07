@@ -9,6 +9,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import ErrorResponse from "../utility/ErrorResponse";
 import { generateAccessToken, generateRefreshToken } from "../utility/token";
 import ResponseJson from "../utility/ResponseJson";
+import AUTHCONFIG from "../config/auth";
 
 const userRequestBody = yup.object().shape({
   username: yup.string().required(),
@@ -41,7 +42,7 @@ export const register: Handler = async (req, res, next) => {
 
 export const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: "secret",
+  secretOrKey: AUTHCONFIG.secretKey,
 };
 
 passport.use(
@@ -108,6 +109,22 @@ export const login: Handler = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
+};
+
+export const refreshToken: Handler = async (req, res, next) => {
+  const accessToken = generateAccessToken(req.user.id);
+  const refreshToken = generateRefreshToken(req.user.id);
+
+  return res.status(200).json(
+    new ResponseJson(true, "Token Refreshed successfully", {
+      user: {
+        ...req.user,
+        password: undefined,
+      },
+      accessToken,
+      refreshToken,
+    })
+  );
 };
 
 export { passport };

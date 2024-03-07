@@ -3,13 +3,13 @@ import { opts } from "../controllers/authenticationControllers";
 
 function generateAccessToken(userId: string) {
   return jwt.sign({ id: userId }, opts.secretOrKey, {
-    expiresIn: "15s",
+    expiresIn: "1m",
   });
 }
 
 function generateRefreshToken(userId: string) {
   return jwt.sign({ id: userId }, opts.secretOrKey, {
-    expiresIn: "30s",
+    expiresIn: "2m",
   });
 }
 
