@@ -10,7 +10,9 @@ const PORT = 3000;
 app.use(express.json());
 
 // route
-app.use(authenticationRouter);
+app.use("/auth", authenticationRouter);
+app.use("/", authenticationRouter);
+
 
 app.use(errorMiddleware);
 app.use("*", notFound);

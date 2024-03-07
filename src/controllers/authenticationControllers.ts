@@ -10,6 +10,7 @@ import ErrorResponse from "../utility/ErrorResponse";
 import { generateAccessToken, generateRefreshToken } from "../utility/token";
 import ResponseJson from "../utility/ResponseJson";
 import AUTHCONFIG from "../config/auth";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 const userRequestBody = yup.object().shape({
   username: yup.string().required(),
@@ -83,6 +84,33 @@ passport.use(
   })
 );
 
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: AUTHCONFIG.googleClientId,
+      clientSecret: AUTHCONFIG.googleClientSecret,
+      callbackURL: "http://localhost:3000/auth/google/callback",
+    },
+    async function (accessToken, refreshToken, profile, cb) {
+      try {
+        let user = await prisma.user.findUnique({
+          where: { username: profile.displayName },
+        });
+
+        if (!user) {
+          user = await prisma.user.create({
+            data: { username: profile.displayName, password: "" },
+          });
+        }
+
+        return cb(null, user);
+      } catch (error) {
+        return cb(error as Error);
+      }
+    }
+  )
+);
+
 export const login: Handler = async (req, res, next) => {
   try {
     await userRequestBody.validate(req.body);
@@ -125,6 +153,33 @@ export const refreshToken: Handler = async (req, res, next) => {
       refreshToken,
     })
   );
+};
+
+export const redirectToGoogleAuth: Handler = async (req, res, next) => {
+  passport.authenticate("google", {
+    scope: ["profile"],
+  })(req, res, next);
+};
+
+export const handleGoogleAuthCallback: Handler = async (req, res, next) => {
+  passport.authenticate(
+    "google",
+    {
+      failureRedirect: "/register",
+      session: false,
+    },
+    (err: Error, user: User) => {
+      const accessToken = generateAccessToken(user.id);
+      const refreshToken = generateRefreshToken(user.id);
+      res.status(200).json(
+        new ResponseJson(true, "sign in with google successfuly", {
+          user: { ...user, password: undefined },
+          accessToken,
+          refreshToken,
+        })
+      );
+    }
+  )(req, res, next);
 };
 
 export { passport };
