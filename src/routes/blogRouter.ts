@@ -18,7 +18,7 @@ router.post(
 );
 
 router.post("/blog", authentication(), createBlog);
-router.get("/blogs", authentication(), getAllBlogs);
-router.get("/blog/:id", authentication(), getBlog);
+router.get("/blogs", getAllBlogs);
+router.get("/blog/:id", getBlog);
 
 export default router;

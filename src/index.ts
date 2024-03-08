@@ -6,6 +6,7 @@ import blogRouter from "./routes/blogRouter";
 import commentRouter from "./routes/commentRouter";
 import path from "path";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = 3000;
@@ -17,6 +18,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 app.use("/static", express.static(path.join(__dirname, "/uploads/banner")));
 
 // route

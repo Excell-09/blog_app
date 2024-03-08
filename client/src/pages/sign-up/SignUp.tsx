@@ -26,7 +26,6 @@ export default function SignUp() {
       toast({ title: "success", description: "Create Account Successfully" });
     },
     onError: (e) => {
-      console.log(e);
       toast({
         title: "failed",
         description: e.message,

@@ -2,6 +2,8 @@ import { Handler } from "express";
 import ResponseJson from "../utility/ResponseJson";
 import * as yup from "yup";
 import prisma from "../lib/prisma";
+import { opts } from "./authenticationControllers";
+import AUTHCONFIG from "../config/auth";
 
 const blogBody = yup.object().shape({
   title: yup.string().required(),

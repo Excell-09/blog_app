@@ -4,6 +4,10 @@ export interface ResponseJson<T> {
   data: T;
 }
 
+export interface UserBody {
+  username: string;
+  password: string;
+}
 
 export interface User {
   username: string;

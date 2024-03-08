@@ -8,10 +8,14 @@ const userBody = Yup.object().shape({
   password: Yup.string().required(),
 });
 
+export type ResponseData = {
+  user: User;
+};
+
 const register = async (user: User) => {
   try {
     const userValidated = await userBody.validate(user);
-    const res = await AppAxios.post<ResponseJson<User>>(
+    const res = await AppAxios.post<ResponseJson<ResponseData>>(
       "/auth/register",
       userValidated
     );
@@ -28,7 +32,7 @@ const register = async (user: User) => {
 const login = async (user: User) => {
   try {
     const userValidated = await userBody.validate(user);
-    const res = await AppAxios.post<ResponseJson<User>>(
+    const res = await AppAxios.post<ResponseJson<ResponseData>>(
       "/auth/login",
       userValidated
     );

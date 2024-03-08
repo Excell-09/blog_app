@@ -1,10 +1,10 @@
-import { Handler } from "express";
+import { Handler, Request } from "express";
 import bcrypt from "bcrypt";
 import prisma from "../lib/prisma";
 import * as yup from "yup";
 import { Prisma, User } from "@prisma/client";
 import passport from "passport";
-import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
+import { Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import ErrorResponse from "../utility/ErrorResponse";
 import { generateAccessToken } from "../utility/token";
@@ -42,8 +42,16 @@ export const register: Handler = async (req, res, next) => {
   }
 };
 
+const cookieExtractor = function (req: Request) {
+  var token = null;
+  if (req && req.cookies) {
+    token = req.cookies["access_token"];
+  }
+  return token;
+};
+
 export const opts = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: cookieExtractor,
   secretOrKey: AUTHCONFIG.secretKey,
 };
 
@@ -140,8 +148,6 @@ export const login: Handler = async (req, res, next) => {
 };
 
 export const refreshToken: Handler = async (req, res, next) => {
-  const accessToken = generateAccessToken(req.user.id);
-
   return res.status(200).json(
     new ResponseJson(true, "Token Refreshed successfully", {
       user: {
