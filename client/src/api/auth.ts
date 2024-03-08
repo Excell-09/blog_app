@@ -25,4 +25,21 @@ const register = async (user: User) => {
   }
 };
 
-export { register };
+const login = async (user: User) => {
+  try {
+    const userValidated = await userBody.validate(user);
+    const res = await AppAxios.post<ResponseJson<User>>(
+      "/auth/login",
+      userValidated
+    );
+    return res.data;
+  } catch (error) {
+    if (error instanceof Yup.ValidationError) {
+      throw new Error(error.message);
+    }
+    const errorResponse = error as AxiosError<ResponseJson<{}>>;
+    throw new Error(errorResponse.response?.data.message);
+  }
+};
+
+export { register, login };

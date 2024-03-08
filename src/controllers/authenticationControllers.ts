@@ -122,6 +122,13 @@ export const login: Handler = async (req, res, next) => {
 
       const accessToken = generateAccessToken(user.id);
 
+      const oneDay = 1000 * 60 * 60 * 24;
+      res.cookie("token", accessToken, {
+        httpOnly: true,
+        sameSite: "none",
+        expires: new Date(Date.now() + oneDay),
+      });
+
       return res.status(200).json(
         new ResponseJson(true, "User logged in successfully", {
           user: {
