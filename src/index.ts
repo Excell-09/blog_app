@@ -5,10 +5,16 @@ import authenticationRouter from "./routes/authenticationRouter";
 import blogRouter from "./routes/blogRouter";
 import commentRouter from "./routes/commentRouter";
 import path from "path";
+import cors from "cors";
 
 const app = express();
 const PORT = 3000;
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 app.use(express.json());
 app.use("/static", express.static(path.join(__dirname, "/uploads/banner")));
 
