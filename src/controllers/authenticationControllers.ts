@@ -131,7 +131,6 @@ export const login: Handler = async (req, res, next) => {
             ...user,
             password: undefined,
           },
-          accessToken,
         })
       );
     })(req, res, next);
@@ -149,7 +148,6 @@ export const refreshToken: Handler = async (req, res, next) => {
         ...req.user,
         password: undefined,
       },
-      accessToken,
     })
   );
 };
