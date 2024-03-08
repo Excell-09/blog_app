@@ -7,7 +7,8 @@ import Blog from "./pages/blog/Blog";
 import ErrorPage from "./pages/error-page/ErrorPage";
 import loaderPreventHasUser from "./loader/loaderPreventHasUser";
 import { useSession } from "./context/AuthContext";
-import EditBlog from "./pages/editBlog/EditBlog";
+import CreateBlog from "./pages/createBlog/CreateBlog";
+import loaderProtectRouter from "./loader/loaderProtectRoute";
 
 function App() {
   const { user } = useSession();
@@ -28,8 +29,9 @@ function App() {
           Component: Blog,
         },
         {
-          path: "/blog/edit",
-          Component: EditBlog,
+          path: "/blog/create",
+          Component: CreateBlog,
+          loader: loaderProtectRouter(user),
         },
         {
           path: "/signin",
