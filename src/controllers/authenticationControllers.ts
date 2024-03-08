@@ -11,6 +11,7 @@ import { generateAccessToken } from "../utility/token";
 import ResponseJson from "../utility/ResponseJson";
 import AUTHCONFIG from "../config/auth";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import attackCookie from "../utility/utility";
 
 const userRequestBody = yup.object().shape({
   username: yup.string().required(),
@@ -122,12 +123,7 @@ export const login: Handler = async (req, res, next) => {
 
       const accessToken = generateAccessToken(user.id);
 
-      const oneDay = 1000 * 60 * 60 * 24;
-      res.cookie("token", accessToken, {
-        httpOnly: true,
-        sameSite: "none",
-        expires: new Date(Date.now() + oneDay),
-      });
+      attackCookie(res, accessToken);
 
       return res.status(200).json(
         new ResponseJson(true, "User logged in successfully", {
@@ -161,6 +157,7 @@ export const refreshToken: Handler = async (req, res, next) => {
 export const redirectToGoogleAuth: Handler = async (req, res, next) => {
   passport.authenticate("google", {
     scope: ["profile"],
+    prompt: "select_account",
   })(req, res, next);
 };
 
@@ -174,12 +171,8 @@ export const handleGoogleAuthCallback: Handler = async (req, res, next) => {
     (err: Error, user: User) => {
       const accessToken = generateAccessToken(user.id);
 
-      res.status(200).json(
-        new ResponseJson(true, "sign in with google successfuly", {
-          user: { ...user, password: undefined },
-          accessToken,
-        })
-      );
+      attackCookie(res, accessToken);
+      return res.redirect("http://localhost:5173");
     }
   )(req, res, next);
 };

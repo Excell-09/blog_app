@@ -35,6 +35,9 @@ export default function SignUp() {
     },
   });
 
+  const directToGoogleSignIn = () =>
+    window.location.replace("http://localhost:3000/auth/google");
+
   const registerHandler: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -88,7 +91,11 @@ export default function SignUp() {
               </Button>
             </form>
             <p className="text-center my-3">Or</p>
-            <Button variant={"outline"} className="w-full">
+            <Button
+              variant={"outline"}
+              className="w-full"
+              onClick={() => directToGoogleSignIn()}
+            >
               <FcGoogle className="text-2xl mr-3" />
               SigIn With Google
             </Button>

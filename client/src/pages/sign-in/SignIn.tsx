@@ -23,11 +23,10 @@ export default function SignIn() {
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: login,
-    onSuccess: (e) => {
-      console.log(e);
+    onSuccess: () => {
+      navigate("/");
     },
     onError: (e) => {
-      console.log(e);
       toast({
         title: "failed",
         description: e.message,
@@ -35,6 +34,9 @@ export default function SignIn() {
       });
     },
   });
+
+  const directToGoogleSignIn = () =>
+    window.location.replace("http://localhost:3000/auth/google");
 
   const loginHandler: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -89,7 +91,11 @@ export default function SignIn() {
               </Button>
             </form>
             <p className="text-center my-3">Or</p>
-            <Button variant={"outline"} className="w-full">
+            <Button
+              variant={"outline"}
+              className="w-full"
+              onClick={() => directToGoogleSignIn()}
+            >
               <FcGoogle className="text-2xl mr-3" />
               SigIn With Google
             </Button>
