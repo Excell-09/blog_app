@@ -28,7 +28,6 @@ const AuthContext = ({ children }: { children: React.ReactNode }) => {
         "/auth/getuser"
       );
       setUser(res.data.data.user);
-      console.log(res);
     } catch (error) {
       return error;
     } finally {

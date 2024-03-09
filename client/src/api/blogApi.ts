@@ -26,7 +26,6 @@ const uploadBanner = async (image: FileList | null) => {
       formData
     );
 
-    console.log(res);
     return res.data;
   } catch (error) {
     const errorResponse = error as AxiosError<ResponseJson<{}>>;
