@@ -3,6 +3,7 @@ import StarterKit from "@tiptap/starter-kit";
 import MenuBarEditor from "./MenubarEditor";
 import Underline from "@tiptap/extension-underline";
 import MenuBubble from "./MenuBubble";
+import DialogPostBlog from "./DialogPostBlog";
 
 export default function Editor() {
   const editor = useEditor({
@@ -22,6 +23,7 @@ export default function Editor() {
           <EditorContent editor={editor} />
         </div>
         {editor ? <MenuBubble editor={editor} /> : null}
+        {editor ? <DialogPostBlog editor={editor} /> : null}
       </div>
     </>
   );

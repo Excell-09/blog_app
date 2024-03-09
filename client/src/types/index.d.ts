@@ -9,6 +9,12 @@ export interface UserBody {
   password: string;
 }
 
+export interface BlogBody {
+  title: string;
+  banner: string;
+  article: string;
+}
+
 export interface User {
   username: string;
   password: string;
