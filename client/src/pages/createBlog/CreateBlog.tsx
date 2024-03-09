@@ -1,3 +1,9 @@
+import Editor from "./Editor";
+
 export default function CreateBlog() {
-  return <h1>Edit</h1>;
+  return (
+    <section className="container bg-gray-100 p-5">
+      <Editor />
+    </section>
+  );
 }
