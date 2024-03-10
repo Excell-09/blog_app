@@ -16,6 +16,11 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface Props extends Comment {
   isOwnComment: boolean;
+  handleStateEditComment: (
+    commentId: string,
+    updatedCommentText: string
+  ) => void;
+  handleStateDeleteComment: (commentId: string) => void;
 }
 
 export default function CommentCard(comment: Props) {
@@ -24,7 +29,6 @@ export default function CommentCard(comment: Props) {
     mutationFn: editComment,
     onSuccess() {
       toast({ description: "Comment Updated" });
-      setIsEditAble(false);
     },
     onError(e) {
       toast({
@@ -59,14 +63,18 @@ export default function CommentCard(comment: Props) {
 
   const handleEditCommet: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    comment.handleStateEditComment(comment.id, commentText);
+    setIsEditAble(false);
     mutationEditComment.mutate({
       commentId: comment.id,
       commentText: commentText,
     });
   };
 
-  const handleDeleteComment = () =>
+  const handleDeleteComment = () => {
+    comment.handleStateDeleteComment(comment.id);
     mutationDeleteComment.mutate({ commentId: comment.id });
+  };
 
   return (
     <div className="flex my-8 gap-3">
@@ -103,7 +111,7 @@ export default function CommentCard(comment: Props) {
             <DropdownMenuContent>
               <DropdownMenuItem onClick={switchEditMode}>Edit</DropdownMenuItem>
               <DropdownMenuItem onClick={handleDeleteComment}>
-                {mutationDeleteComment.isPending ? "Deleting..." : "delete"}
+                delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

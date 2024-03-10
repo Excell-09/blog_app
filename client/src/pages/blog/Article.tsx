@@ -42,7 +42,7 @@ export default function Article(blog: Blog) {
         <EditorContent editor={editor} />
       </div>
 
-      <Comment comments={blog.Comment} blogId={blog.id} />
+      <Comment comments={blog.Comment} currentBlog={blog} />
     </div>
   );
 }
