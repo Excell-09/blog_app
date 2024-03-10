@@ -1,4 +1,4 @@
-import { BlogBody, ResponseJson } from "@/types";
+import { Blog, BlogBody, ResponseJson } from "@/types";
 import { AppAxios } from "@/utility/AppAxios";
 import { AxiosError } from "axios";
 import * as Yup from "yup";
@@ -9,8 +9,12 @@ const blogBody = Yup.object().shape({
   article: Yup.string().required(),
 });
 
-interface ResponseUploadBanner {
+interface ResponseDataUploadBanner {
   url: string;
+}
+
+interface ResponseDataGetAllBlogs {
+  blogs: Blog[];
 }
 
 const uploadBanner = async (image: FileList | null) => {
@@ -21,7 +25,7 @@ const uploadBanner = async (image: FileList | null) => {
     const formData = new FormData();
     formData.append("banner", image[0]);
 
-    const res = await AppAxios.post<ResponseJson<ResponseUploadBanner>>(
+    const res = await AppAxios.post<ResponseJson<ResponseDataUploadBanner>>(
       "/api/upload/banner",
       formData
     );
@@ -51,4 +55,16 @@ const postBlog = async (data: BlogBody) => {
   }
 };
 
-export { postBlog, uploadBanner };
+const getAllBlogs = async () => {
+  try {
+    const res = await AppAxios.get<ResponseJson<ResponseDataGetAllBlogs>>(
+      "/api/blogs"
+    );
+    return res.data.data;
+  } catch (error) {
+    const errorResponse = error as AxiosError<ResponseJson<{}>>;
+    throw new Error(errorResponse.response?.data.message);
+  }
+};
+
+export { postBlog, uploadBanner, getAllBlogs };

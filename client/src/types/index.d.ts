@@ -15,7 +15,22 @@ export interface BlogBody {
   article: string;
 }
 
+export interface Blog {
+  id: string;
+  title: string;
+  banner: string;
+  article: string;
+  author: User;
+  Comment: Comment;
+}
+
+export interface Comment {
+  id: string;
+  comment: string;
+  blog: Blog;
+  author: User;
+}
+
 export interface User {
   username: string;
-  password: string;
 }
