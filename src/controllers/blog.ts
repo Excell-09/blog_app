@@ -56,7 +56,7 @@ const getBlog: Handler = async (req, res, next) => {
   try {
     const { id } = await idBlogParams.validate(req.params);
 
-    const blogs = await prisma.blog.findUniqueOrThrow({
+    const blog = await prisma.blog.findUniqueOrThrow({
       where: { id },
       include: {
         Comment: {
@@ -68,7 +68,7 @@ const getBlog: Handler = async (req, res, next) => {
 
     return res.status(200).json(
       new ResponseJson(true, "Success", {
-        blogs,
+        blog,
       })
     );
   } catch (error) {

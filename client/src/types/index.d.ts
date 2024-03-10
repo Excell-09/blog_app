@@ -21,7 +21,8 @@ export interface Blog {
   banner: string;
   article: string;
   author: User;
-  Comment: Comment;
+  Comment: Comment[];
+  createdAt: Date;
 }
 
 export interface Comment {

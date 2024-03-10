@@ -1,5 +1,6 @@
 import { Blog, BlogBody, ResponseJson } from "@/types";
 import { AppAxios } from "@/utility/AppAxios";
+import { QueryFunction } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import * as Yup from "yup";
 
@@ -15,6 +16,10 @@ interface ResponseDataUploadBanner {
 
 interface ResponseDataGetAllBlogs {
   blogs: Blog[];
+}
+
+interface ResponseDataGetBlog {
+  blog: Blog;
 }
 
 const uploadBanner = async (image: FileList | null) => {
@@ -67,4 +72,17 @@ const getAllBlogs = async () => {
   }
 };
 
-export { postBlog, uploadBanner, getAllBlogs };
+const getBlog: QueryFunction<ResponseDataGetBlog> = async ({ queryKey }) => {
+  try {
+    const [_, blogId] = queryKey;
+    const res = await AppAxios.get<ResponseJson<ResponseDataGetBlog>>(
+      `/api/blog/${blogId}`
+    );
+    return res.data.data;
+  } catch (error) {
+    const errorResponse = error as AxiosError<ResponseJson<{}>>;
+    throw new Error(errorResponse.response?.data.message);
+  }
+};
+
+export { postBlog, uploadBanner, getAllBlogs, getBlog };
