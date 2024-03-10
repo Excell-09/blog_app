@@ -9,6 +9,7 @@ export default function Article(blog: Blog) {
   const editor = useEditor({
     extensions: [StarterKit, Underline],
     content: JSON.parse(blog.article),
+    editable: false,
   });
 
   return (
