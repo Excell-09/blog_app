@@ -1,4 +1,4 @@
-import { ResponseJson, User } from "@/types";
+import { ResponseJson, User, UserBody } from "@/types";
 import { AppAxios } from "@/utility/AppAxios";
 import { AxiosError } from "axios";
 import * as Yup from "yup";
@@ -12,7 +12,7 @@ export type ResponseData = {
   user: User;
 };
 
-const register = async (user: User) => {
+const register = async (user: UserBody) => {
   try {
     const userValidated = await userBody.validate(user);
     const res = await AppAxios.post<ResponseJson<ResponseData>>(
@@ -29,7 +29,7 @@ const register = async (user: User) => {
   }
 };
 
-const login = async (user: User) => {
+const login = async (user: UserBody) => {
   try {
     const userValidated = await userBody.validate(user);
     const res = await AppAxios.post<ResponseJson<ResponseData>>(
