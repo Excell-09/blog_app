@@ -18,7 +18,7 @@ const idBlogParams = yup.object().shape({
 const uploadBanner: Handler = (req, res) => {
   return res.status(201).json(
     new ResponseJson(true, "banner uploaded", {
-      url: `http://localhost:3000/static/${req.file?.filename}`,
+      url: `${AUTHCONFIG.backendUrl}/static/${req.file?.filename}`,
     })
   );
 };

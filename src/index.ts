@@ -7,13 +7,14 @@ import commentRouter from "./routes/commentRouter";
 import path from "path";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import AUTHCONFIG from "./config/auth";
 
 const app = express();
 const PORT = 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: AUTHCONFIG.fontendUrl,
     credentials: true,
   })
 );

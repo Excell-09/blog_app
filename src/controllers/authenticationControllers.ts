@@ -98,7 +98,7 @@ passport.use(
     {
       clientID: AUTHCONFIG.googleClientId,
       clientSecret: AUTHCONFIG.googleClientSecret,
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      callbackURL: `${AUTHCONFIG.backendUrl}/auth/google/callback`,
     },
     async function (accessToken, refreshToken, profile, cb) {
       try {
@@ -176,7 +176,7 @@ export const handleGoogleAuthCallback: Handler = async (req, res, next) => {
       const accessToken = generateAccessToken(user.id);
 
       attackCookie(res, accessToken);
-      return res.redirect("http://localhost:5173");
+      return res.redirect(AUTHCONFIG.fontendUrl);
     }
   )(req, res, next);
 };
