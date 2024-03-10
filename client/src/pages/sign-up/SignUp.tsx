@@ -16,6 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { register } from "@/api/auth";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useToast } from "@/components/ui/use-toast";
+import config from "@/config/config";
 
 export default function SignUp() {
   const [isShow, setIsShow] = React.useState(false);
@@ -35,7 +36,7 @@ export default function SignUp() {
   });
 
   const directToGoogleSignIn = () =>
-    window.location.replace("http://localhost:3000/auth/google");
+    window.location.replace(`${config.backendUrl}/auth/google`);
 
   const registerHandler: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
